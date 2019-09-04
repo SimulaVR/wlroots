@@ -228,18 +228,19 @@ static void handle_display_destroy(struct wl_listener *listener, void *data) {
 static int xserver_handle_ready(int signal_number, void *data) {
 	struct wlr_xwayland *wlr_xwayland = data;
 
-	int stat_val = -1;
-	while (waitpid(wlr_xwayland->pid, &stat_val, 0) < 0) {
-		if (errno == EINTR) {
-			continue;
-		}
-		wlr_log_errno(WLR_ERROR, "waitpid for Xwayland fork failed");
-		return 1;
-	}
-	if (stat_val) {
-		wlr_log(WLR_ERROR, "Xwayland startup failed, not setting up xwm");
-		return 1;
-	}
+  //SIMULA HACK: Silently ignore this error so that Simula can start.
+	/* int stat_val = -1; */
+	/* while (waitpid(wlr_xwayland->pid, &stat_val, 0) < 0) { */
+	/* 	if (errno == EINTR) { */
+	/* 		continue; */
+	/* 	} */
+	/* 	wlr_log_errno(WLR_ERROR, "waitpid for Xwayland fork failed"); */ //<- Simula gets stuck here otherwise
+	/* 	return 1; */
+	/* } */
+	/* if (stat_val) { */
+	/* 	wlr_log(WLR_ERROR, "Xwayland startup failed, not setting up xwm"); */
+	/* 	return 1; */
+	/* } */
 	wlr_log(WLR_DEBUG, "Xserver is ready");
 
 	wlr_xwayland->xwm = xwm_create(wlr_xwayland);
