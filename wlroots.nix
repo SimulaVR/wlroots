@@ -8,12 +8,6 @@ stdenv.mkDerivation rec {
   pname = "wlroots";
   version = "0.10.0";
 
-  # src = fetchFromGitHub {
-  #   owner = "SimulaVR";
-  #   repo = "wlroots";
-  #   rev = "200168673136866379ca9ef4d2b3682d06f92ba4";
-  #   sha256 = "1y1ni9r2sh7mq4x11v0rhqqh874qkimqdd2kq2bx90qwab7a5855";
-  # };
   src = ./.;
 
   # $out for the library and $examples for the example programs (in examples):
