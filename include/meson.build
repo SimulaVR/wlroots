@@ -1,1 +1,2 @@
 subdir('wlr')
+subdir('xwayland')

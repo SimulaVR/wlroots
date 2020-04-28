@@ -24,7 +24,7 @@ stdenv.mkDerivation rec {
 
   mesonFlags = [
     "-Dlibcap=enabled" "-Dlogind=enabled" "-Dxwayland=enabled" "-Dx11-backend=enabled"
-    "-Dxcb-icccm=enabled" "-Dxcb-errors=enabled"
+    "-Dxcb-icccm=disabled" "-Dxcb-errors=disabled"
   ];
 
   postInstall = ''
