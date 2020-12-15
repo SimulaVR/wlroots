@@ -30,7 +30,7 @@ stdenv.mkDerivation rec {
   postInstall = ''
     # Copy the library to $examples
     mkdir -p $examples/lib
-    cp -P libwlroots* $examples/lib/
+    cp -Pr libwlroots* $examples/lib/
   '';
 
   postFixup = ''
