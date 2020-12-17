@@ -1,1 +1,1 @@
-(import <nixpkgs> {}).callPackage ./wlroots.nix {}
+(import ../../pinned-nixpkgs.nix {}).callPackage ./wlroots.nix {}
