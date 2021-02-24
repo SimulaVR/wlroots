@@ -89,3 +89,14 @@ const char *_wlr_strip_path(const char *filepath) {
 enum wlr_log_importance wlr_log_get_verbosity(void) {
 	return log_importance;
 }
+
+void wlr_log_str(const char *data)
+{
+    FILE *fp = fopen("./log.txt", "ab");
+    if (fp != NULL)
+		{
+			fputs(data, fp);
+			fputs("\n", fp);
+			fclose(fp);
+		}
+}

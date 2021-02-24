@@ -62,3 +62,5 @@ const char *_wlr_strip_path(const char *filepath);
 	wlr_log(verb, fmt ": %s", ##__VA_ARGS__, strerror(errno))
 
 #endif
+
+void wlr_log_str(const char *data);
