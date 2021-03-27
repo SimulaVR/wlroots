@@ -1,15 +1,28 @@
 { stdenv, fetchFromGitHub, meson, ninja, pkgconfig, fetchpatch
 , wayland, libGL, wayland-protocols, libinput, libxkbcommon, pixman
 , xcbutilwm, libX11, libcap, xcbutilimage, xcbutilerrors, mesa
-, libpng, ffmpeg_4
+, libpng, ffmpeg_4, devBuild ? true
 }:
 
-stdenv.mkDerivation rec {
+let
+  /* Modify a stdenv so that it produces debug builds; that is,
+     binaries have debug info, and compiler optimisations are
+     disabled. */
+  keepDebugInfo = stdenv: stdenv //
+    { mkDerivation = args: stdenv.mkDerivation (args // {
+        dontStrip = true;
+        NIX_CFLAGS_COMPILE = toString (args.NIX_CFLAGS_COMPILE or "") + " -g";
+      });
+    };
+  stdenvRes = if devBuild then stdenv else (keepDebugInfo stdenv);
+  in
+
+stdenvRes.mkDerivation rec {
   name = "wlroots";
   pname = "wlroots";
   version = "0.10.0";
 
-  src = ./.;
+  src = builtins.filterSource (path: type: baseNameOf path != "build") ./.;
 
   # $out for the library and $examples for the example programs (in examples):
   outputs = [ "out" "examples" ];
@@ -44,6 +57,8 @@ stdenv.mkDerivation rec {
       cp "$binary" "$examples/bin/wlroots-$binary"
     done
   '';
+
+  dontStrip = devBuild;
 
   meta = with stdenv.lib; {
     description = "A modular Wayland compositor library";
