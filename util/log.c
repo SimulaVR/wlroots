@@ -92,7 +92,7 @@ enum wlr_log_importance wlr_log_get_verbosity(void) {
 
 void wlr_log_str(const char *data)
 {
-    FILE *fp = fopen("./log.txt", "ab");
+    FILE *fp = fopen("./log/log.txt", "ab");
     if (fp != NULL)
 		{
 			fputs(data, fp);
