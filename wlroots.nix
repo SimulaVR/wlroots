@@ -11,10 +11,10 @@ let
   keepDebugInfo = stdenv: stdenv //
     { mkDerivation = args: stdenv.mkDerivation (args // {
         dontStrip = true;
-        NIX_CFLAGS_COMPILE = toString (args.NIX_CFLAGS_COMPILE or "") + " -g";
+        NIX_CFLAGS_COMPILE = toString (args.NIX_CFLAGS_COMPILE or "") + " -Og";
       });
     };
-  stdenvRes = if devBuild then stdenv else (keepDebugInfo stdenv);
+  stdenvRes = if devBuild then (keepDebugInfo stdenv) else stdenv;
   in
 
 stdenvRes.mkDerivation rec {
@@ -57,8 +57,6 @@ stdenvRes.mkDerivation rec {
       cp "$binary" "$examples/bin/wlroots-$binary"
     done
   '';
-
-  dontStrip = devBuild;
 
   meta = with stdenv.lib; {
     description = "A modular Wayland compositor library";
