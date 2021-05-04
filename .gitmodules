@@ -1,0 +1,3 @@
+[submodule "libxcb-errors"]
+	path = libxcb-errors
+	url = https://github.com/SimulaVR/libxcb-errors.git

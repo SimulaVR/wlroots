@@ -2,6 +2,7 @@
 , wayland, libGL, wayland-protocols, libinput, libxkbcommon, pixman
 , xcbutilwm, libX11, libcap, xcbutilimage, xcbutilerrors, mesa
 , libpng, ffmpeg_4, devBuild ? true
+, autoreconfHook, xorg, libbsd, pkg-config, python310
 }:
 
 let
@@ -15,6 +16,7 @@ let
       });
     };
   stdenvRes = if devBuild then (keepDebugInfo stdenv) else stdenv;
+  libxcb-errors = import ./libxcb-errors/libxcb-errors.nix { stdenv = stdenv; pkg-config=pkg-config; autoreconfHook = autoreconfHook; xorg = xorg; libbsd = libbsd; python310 = python310; };
   in
 
 stdenvRes.mkDerivation rec {
@@ -32,12 +34,12 @@ stdenvRes.mkDerivation rec {
   buildInputs = [
     wayland libGL wayland-protocols libinput libxkbcommon pixman
     xcbutilwm libX11 libcap xcbutilimage xcbutilerrors mesa
-    libpng ffmpeg_4
+    libpng ffmpeg_4 libxcb-errors
   ];
 
   mesonFlags = [
     "-Dlibcap=enabled" "-Dlogind=enabled" "-Dxwayland=enabled" "-Dx11-backend=enabled"
-    "-Dxcb-icccm=disabled" "-Dxcb-errors=disabled"
+    "-Dxcb-icccm=disabled" "-Dxcb-errors=enabled"
   ];
 
   postInstall = ''
