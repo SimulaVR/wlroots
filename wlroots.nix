@@ -1,25 +1,14 @@
 { stdenv, fetchFromGitHub, meson, ninja, pkgconfig, fetchpatch
 , wayland, libGL, wayland-protocols, libinput, libxkbcommon, pixman
 , xcbutilwm, libX11, libcap, xcbutilimage, xcbutilerrors, mesa
-, libpng, ffmpeg_4, devBuild ? true
-, autoreconfHook, xorg, libbsd, pkg-config, python310
+, libpng, ffmpeg_4, autoreconfHook, xorg, libbsd, pkg-config, python310
 }:
 
 let
-  /* Modify a stdenv so that it produces debug builds; that is,
-     binaries have debug info, and compiler optimisations are
-     disabled. */
-  keepDebugInfo = stdenv: stdenv //
-    { mkDerivation = args: stdenv.mkDerivation (args // {
-        dontStrip = true;
-        NIX_CFLAGS_COMPILE = toString (args.NIX_CFLAGS_COMPILE or "") + " -Og";
-      });
-    };
-  stdenvRes = if devBuild then (keepDebugInfo stdenv) else stdenv;
   libxcb-errors = import ./libxcb-errors/libxcb-errors.nix { stdenv = stdenv; pkg-config=pkg-config; autoreconfHook = autoreconfHook; xorg = xorg; libbsd = libbsd; python310 = python310; };
   in
 
-stdenvRes.mkDerivation rec {
+stdenv.mkDerivation rec {
   name = "wlroots";
   pname = "wlroots";
   version = "0.10.0";
