@@ -1,11 +1,11 @@
-{ stdenv, fetchFromGitHub, meson, ninja, pkgconfig, fetchpatch
+{ stdenv, lib, fetchFromGitHub, meson, ninja, pkgconfig, fetchpatch
 , wayland, libGL, wayland-protocols, libinput, libxkbcommon, pixman
 , xcbutilwm, libX11, libcap, xcbutilimage, xcbutilerrors, mesa
 , libpng, ffmpeg_4, autoreconfHook, xorg, libbsd, pkg-config, python310
 }:
 
 let
-  libxcb-errors = import ./libxcb-errors/libxcb-errors.nix { stdenv = stdenv; pkg-config=pkg-config; autoreconfHook = autoreconfHook; xorg = xorg; libbsd = libbsd; python310 = python310; };
+  libxcb-errors = import ./libxcb-errors/libxcb-errors.nix { stdenv = stdenv; lib = lib; pkg-config=pkg-config; autoreconfHook = autoreconfHook; xorg = xorg; libbsd = libbsd; python310 = python310; };
   in
 
 stdenv.mkDerivation rec {
@@ -49,7 +49,7 @@ stdenv.mkDerivation rec {
     done
   '';
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "A modular Wayland compositor library";
     inherit (src.meta) homepage;
     license     = licenses.mit;
