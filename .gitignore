@@ -8,3 +8,7 @@ build-*/
 wayland-*-protocol.*
 wlr-example.ini
 rootston.ini
+
+# Nix
+.direnv/
+result
