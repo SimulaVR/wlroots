@@ -1,11 +1,6 @@
-default:
-    @just --list
-
-# Run `meson setup build`
-setup:
-    meson setup build
-
-# Run `ninja` in `/build`
-[working-directory: 'build']
 build:
-    ninja
+    @if [ -d "./build" ]; then \
+        ninja -C build; \
+    else \
+        meson build; ninja -C build; \
+    fi
