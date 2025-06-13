@@ -4,3 +4,6 @@ build:
     else \
         meson build; ninja -C build; \
     fi
+
+clean:
+    rm -rf build
