@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/63dacb46bf939521bdc93981b4cbb7ecb58427a0";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     systems.url = "github:nix-systems/default-linux";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -81,10 +81,9 @@
               pkgs.xorg.libX11.dev
               pkgs.xorg.libxcb.dev
               pkgs.xorg.xinput
-              pkgs.mesa              # <- exclude when bumping to newer nixpkgs
-              # pkgs.libdrm          # <- include when bumping to newer nixpkgs
-              # pkgs.libgbm          # <- include when bumping to newer nixpkgs
-              # pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
+              pkgs.libdrm
+              pkgs.libgbm
+              pkgs.mesa-gl-headers
 
               libxcb-errors
             ];
@@ -163,10 +162,10 @@
               pkgs.xorg.libX11.dev
               pkgs.xorg.libxcb.dev
               pkgs.xorg.xinput
-              pkgs.mesa              # <- exclude when bumping to newer nixpkgs
-              # pkgs.libdrm          # <- include when bumping to newer nixpkgs
-              # pkgs.libgbm          # <- include when bumping to newer nixpkgs
-              # pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
+              # pkgs.mesa              # <- exclude when bumping to newer nixpkgs
+              pkgs.libdrm          # <- include when bumping to newer nixpkgs
+              pkgs.libgbm          # <- include when bumping to newer nixpkgs
+              pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
 
               libxcb-errors
             ];
