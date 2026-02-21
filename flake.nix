@@ -6,6 +6,10 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     libxcb-errors = {
       url = "github:SimulaVR/libxcb-errors";
       flake = false;
@@ -16,8 +20,10 @@
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
+      imports = [ inputs.treefmt-nix.flakeModule ];
 
-      perSystem = { pkgs, lib, ... }:
+      perSystem =
+        { pkgs, lib, ... }:
         let
           libxcb-errors = pkgs.stdenv.mkDerivation {
             name = "libxcb-errors";
@@ -134,6 +140,13 @@
             default = wlroots;
           };
 
+          treefmt = {
+            projectRootFile = ".git/config";
+
+            # Nix
+            programs.nixfmt.enable = true;
+          };
+
           devShells.default = pkgs.mkShell rec {
             nativeBuildInputs = [
               pkgs.nil
@@ -162,9 +175,9 @@
               pkgs.xorg.libX11.dev
               pkgs.xorg.libxcb.dev
               pkgs.xorg.xinput
-              # pkgs.mesa              # <- exclude when bumping to newer nixpkgs
-              pkgs.libdrm          # <- include when bumping to newer nixpkgs
-              pkgs.libgbm          # <- include when bumping to newer nixpkgs
+              # pkgs.mesa # <- exclude when bumping to newer nixpkgs
+              pkgs.libdrm # <- include when bumping to newer nixpkgs
+              pkgs.libgbm # <- include when bumping to newer nixpkgs
               pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
 
               libxcb-errors
