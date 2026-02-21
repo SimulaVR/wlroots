@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     systems.url = "github:nix-systems/default-linux";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -9,10 +9,6 @@
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    libxcb-errors = {
-      url = "github:SimulaVR/libxcb-errors";
-      flake = false;
     };
   };
 
@@ -25,32 +21,6 @@
       perSystem =
         { pkgs, lib, ... }:
         let
-          libxcb-errors = pkgs.stdenv.mkDerivation {
-            name = "libxcb-errors";
-            src = inputs.libxcb-errors;
-
-            nativeBuildInputs = [
-              pkgs.pkg-config
-              pkgs.python3
-              pkgs.autoreconfHook
-            ];
-
-            buildInputs = [
-              pkgs.xorg.libxcb
-              pkgs.xorg.libXau
-              pkgs.xorg.libXdmcp
-              pkgs.xorg.utilmacros
-              pkgs.xorg.xcbproto
-              pkgs.libbsd
-            ];
-
-            meta = {
-              description = "Allow XCB errors to print less opaquely";
-              homepage = "https://github.com/SimulaVR/libxcb-errors";
-              license = lib.licenses.mit;
-              platforms = lib.platforms.linux;
-            };
-          };
           wlroots = pkgs.stdenv.mkDerivation {
             pname = "wlroots";
             version = "0.10.0";
@@ -78,20 +48,19 @@
               pkgs.libinput
               pkgs.libxkbcommon
               pkgs.pixman
-              pkgs.xorg.xcbutilwm
+              pkgs.xcbutilwm
               pkgs.libcap
-              pkgs.xorg.xcbutilimage
-              pkgs.xorg.xcbutilerrors
+              pkgs.xcbutilimage
+              pkgs.xcbutilerrors
               pkgs.libpng
               pkgs.ffmpeg_4
-              pkgs.xorg.libX11.dev
-              pkgs.xorg.libxcb.dev
-              pkgs.xorg.xinput
+              pkgs.libX11.dev
+              pkgs.libxcb.dev
+              pkgs.xinput
               pkgs.libdrm
               pkgs.libgbm
               pkgs.mesa-gl-headers
-
-              libxcb-errors
+              pkgs.libxcb-errors
             ];
 
             mesonFlags = [
@@ -166,21 +135,20 @@
               pkgs.libinput
               pkgs.libxkbcommon
               pkgs.pixman
-              pkgs.xorg.xcbutilwm
+              pkgs.xcbutilwm
               pkgs.libcap
-              pkgs.xorg.xcbutilimage
-              pkgs.xorg.xcbutilerrors
+              pkgs.xcbutilimage
+              pkgs.xcbutilerrors
               pkgs.libpng
               pkgs.ffmpeg_4
-              pkgs.xorg.libX11.dev
-              pkgs.xorg.libxcb.dev
-              pkgs.xorg.xinput
+              pkgs.libX11.dev
+              pkgs.libxcb.dev
+              pkgs.xinput
               # pkgs.mesa # <- exclude when bumping to newer nixpkgs
               pkgs.libdrm # <- include when bumping to newer nixpkgs
               pkgs.libgbm # <- include when bumping to newer nixpkgs
               pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
-
-              libxcb-errors
+              pkgs.libxcb-errors
             ];
 
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
