@@ -33,35 +33,8 @@
               "examples"
             ];
 
-            nativeBuildInputs = [
-              pkgs.meson
-              pkgs.cmake
-              pkgs.ninja
-              pkgs.pkg-config
-              pkgs.wayland-scanner
-            ];
-
-            buildInputs = [
-              pkgs.wayland
-              pkgs.libGL
-              pkgs.wayland-protocols
-              pkgs.libinput
-              pkgs.libxkbcommon
-              pkgs.pixman
-              pkgs.xcbutilwm
-              pkgs.libcap
-              pkgs.xcbutilimage
-              pkgs.xcbutilerrors
-              pkgs.libpng
-              pkgs.ffmpeg_4
-              pkgs.libX11.dev
-              pkgs.libxcb.dev
-              pkgs.xinput
-              pkgs.libdrm
-              pkgs.libgbm
-              pkgs.mesa-gl-headers
-              pkgs.libxcb-errors
-            ];
+            nativeBuildInputs = tools.dependencies;
+            inherit buildInputs LDFLAGS;
 
             mesonFlags = [
               "-Dlibcap=enabled"
@@ -70,11 +43,6 @@
               "-Dx11-backend=enabled"
               "-Dxcb-icccm=disabled"
               "-Dxcb-errors=enabled"
-            ];
-
-            LDFLAGS = [
-              "-lX11-xcb"
-              "-lxcb-xinput"
             ];
 
             postInstall = ''
@@ -102,6 +70,47 @@
               platforms = lib.platforms.linux;
             };
           };
+
+          tools.development = [
+            # LSP
+            pkgs.nil # Nix
+
+            # Command Runner
+            pkgs.just
+          ];
+          tools.dependencies = [
+            pkgs.meson
+            pkgs.cmake
+            pkgs.ninja
+            pkgs.pkg-config
+            pkgs.wayland-scanner
+          ];
+          buildInputs = [
+            pkgs.wayland
+            pkgs.libGL
+            pkgs.wayland-protocols
+            pkgs.libinput
+            pkgs.libxkbcommon
+            pkgs.pixman
+            pkgs.xcbutilwm
+            pkgs.libcap
+            pkgs.xcbutilimage
+            pkgs.xcbutilerrors
+            pkgs.libpng
+            pkgs.ffmpeg_4
+            pkgs.libX11.dev
+            pkgs.libxcb.dev
+            pkgs.xinput
+            # pkgs.mesa # <- exclude when bumping to newer nixpkgs
+            pkgs.libdrm # <- include when bumping to newer nixpkgs
+            pkgs.libgbm # <- include when bumping to newer nixpkgs
+            pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
+            pkgs.libxcb-errors
+          ];
+          LDFLAGS = [
+            "-lX11-xcb"
+            "-lxcb-xinput"
+          ];
         in
         {
           packages = {
@@ -116,47 +125,9 @@
             programs.nixfmt.enable = true;
           };
 
-          devShells.default = pkgs.mkShell rec {
-            nativeBuildInputs = [
-              pkgs.nil
-              pkgs.just
-
-              pkgs.meson
-              pkgs.cmake
-              pkgs.ninja
-              pkgs.pkg-config
-              pkgs.wayland-scanner
-            ];
-
-            buildInputs = [
-              pkgs.wayland
-              pkgs.libGL
-              pkgs.wayland-protocols
-              pkgs.libinput
-              pkgs.libxkbcommon
-              pkgs.pixman
-              pkgs.xcbutilwm
-              pkgs.libcap
-              pkgs.xcbutilimage
-              pkgs.xcbutilerrors
-              pkgs.libpng
-              pkgs.ffmpeg_4
-              pkgs.libX11.dev
-              pkgs.libxcb.dev
-              pkgs.xinput
-              # pkgs.mesa # <- exclude when bumping to newer nixpkgs
-              pkgs.libdrm # <- include when bumping to newer nixpkgs
-              pkgs.libgbm # <- include when bumping to newer nixpkgs
-              pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
-              pkgs.libxcb-errors
-            ];
-
-            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
-
-            LDFLAGS = [
-              "-lX11-xcb"
-              "-lxcb-xinput"
-            ];
+          devShells.default = pkgs.mkShell {
+            nativeBuildInputs = tools.dependencies ++ tools.development;
+            inherit buildInputs LDFLAGS;
           };
         };
     };
