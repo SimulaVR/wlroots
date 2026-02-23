@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     systems.url = "github:nix-systems/default-linux";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -9,10 +9,6 @@
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    libxcb-errors = {
-      url = "github:SimulaVR/libxcb-errors";
-      flake = false;
     };
   };
 
@@ -25,32 +21,6 @@
       perSystem =
         { pkgs, lib, ... }:
         let
-          libxcb-errors = pkgs.stdenv.mkDerivation {
-            name = "libxcb-errors";
-            src = inputs.libxcb-errors;
-
-            nativeBuildInputs = [
-              pkgs.pkg-config
-              pkgs.python3
-              pkgs.autoreconfHook
-            ];
-
-            buildInputs = [
-              pkgs.xorg.libxcb
-              pkgs.xorg.libXau
-              pkgs.xorg.libXdmcp
-              pkgs.xorg.utilmacros
-              pkgs.xorg.xcbproto
-              pkgs.libbsd
-            ];
-
-            meta = {
-              description = "Allow XCB errors to print less opaquely";
-              homepage = "https://github.com/SimulaVR/libxcb-errors";
-              license = lib.licenses.mit;
-              platforms = lib.platforms.linux;
-            };
-          };
           wlroots = pkgs.stdenv.mkDerivation {
             pname = "wlroots";
             version = "0.10.0";
@@ -63,36 +33,8 @@
               "examples"
             ];
 
-            nativeBuildInputs = [
-              pkgs.meson
-              pkgs.cmake
-              pkgs.ninja
-              pkgs.pkg-config
-              pkgs.wayland-scanner
-            ];
-
-            buildInputs = [
-              pkgs.wayland
-              pkgs.libGL
-              pkgs.wayland-protocols
-              pkgs.libinput
-              pkgs.libxkbcommon
-              pkgs.pixman
-              pkgs.xorg.xcbutilwm
-              pkgs.libcap
-              pkgs.xorg.xcbutilimage
-              pkgs.xorg.xcbutilerrors
-              pkgs.libpng
-              pkgs.ffmpeg_4
-              pkgs.xorg.libX11.dev
-              pkgs.xorg.libxcb.dev
-              pkgs.xorg.xinput
-              pkgs.libdrm
-              pkgs.libgbm
-              pkgs.mesa-gl-headers
-
-              libxcb-errors
-            ];
+            nativeBuildInputs = tools.dependencies;
+            inherit buildInputs LDFLAGS;
 
             mesonFlags = [
               "-Dlibcap=enabled"
@@ -101,11 +43,6 @@
               "-Dx11-backend=enabled"
               "-Dxcb-icccm=disabled"
               "-Dxcb-errors=enabled"
-            ];
-
-            LDFLAGS = [
-              "-lX11-xcb"
-              "-lxcb-xinput"
             ];
 
             postInstall = ''
@@ -133,6 +70,47 @@
               platforms = lib.platforms.linux;
             };
           };
+
+          tools.development = [
+            # LSP
+            pkgs.nil # Nix
+
+            # Command Runner
+            pkgs.just
+          ];
+          tools.dependencies = [
+            pkgs.meson
+            pkgs.cmake
+            pkgs.ninja
+            pkgs.pkg-config
+            pkgs.wayland-scanner
+          ];
+          buildInputs = [
+            pkgs.wayland
+            pkgs.libGL
+            pkgs.wayland-protocols
+            pkgs.libinput
+            pkgs.libxkbcommon
+            pkgs.pixman
+            pkgs.xcbutilwm
+            pkgs.libcap
+            pkgs.xcbutilimage
+            pkgs.xcbutilerrors
+            pkgs.libpng
+            pkgs.ffmpeg_4
+            pkgs.libX11.dev
+            pkgs.libxcb.dev
+            pkgs.xinput
+            # pkgs.mesa # <- exclude when bumping to newer nixpkgs
+            pkgs.libdrm # <- include when bumping to newer nixpkgs
+            pkgs.libgbm # <- include when bumping to newer nixpkgs
+            pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
+            pkgs.libxcb-errors
+          ];
+          LDFLAGS = [
+            "-lX11-xcb"
+            "-lxcb-xinput"
+          ];
         in
         {
           packages = {
@@ -147,48 +125,9 @@
             programs.nixfmt.enable = true;
           };
 
-          devShells.default = pkgs.mkShell rec {
-            nativeBuildInputs = [
-              pkgs.nil
-              pkgs.just
-
-              pkgs.meson
-              pkgs.cmake
-              pkgs.ninja
-              pkgs.pkg-config
-              pkgs.wayland-scanner
-            ];
-
-            buildInputs = [
-              pkgs.wayland
-              pkgs.libGL
-              pkgs.wayland-protocols
-              pkgs.libinput
-              pkgs.libxkbcommon
-              pkgs.pixman
-              pkgs.xorg.xcbutilwm
-              pkgs.libcap
-              pkgs.xorg.xcbutilimage
-              pkgs.xorg.xcbutilerrors
-              pkgs.libpng
-              pkgs.ffmpeg_4
-              pkgs.xorg.libX11.dev
-              pkgs.xorg.libxcb.dev
-              pkgs.xorg.xinput
-              # pkgs.mesa # <- exclude when bumping to newer nixpkgs
-              pkgs.libdrm # <- include when bumping to newer nixpkgs
-              pkgs.libgbm # <- include when bumping to newer nixpkgs
-              pkgs.mesa-gl-headers # <- include when bumping to newer nixpkgs
-
-              libxcb-errors
-            ];
-
-            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
-
-            LDFLAGS = [
-              "-lX11-xcb"
-              "-lxcb-xinput"
-            ];
+          devShells.default = pkgs.mkShell {
+            nativeBuildInputs = tools.dependencies ++ tools.development;
+            inherit buildInputs LDFLAGS;
           };
         };
     };

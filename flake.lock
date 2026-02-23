@@ -20,34 +20,18 @@
         "type": "github"
       }
     },
-    "libxcb-errors": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1732504353,
-        "narHash": "sha256-LPNRkLQSTPkCRIc9lhHYIvQs8ags3GpGehCWLY5qvJw=",
-        "owner": "SimulaVR",
-        "repo": "libxcb-errors",
-        "rev": "cb26a7dc442b0bb37f8648986350291d3d45a47a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "SimulaVR",
-        "repo": "libxcb-errors",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1770464364,
-        "narHash": "sha256-z5NJPSBwsLf/OfD8WTmh79tlSU8XgIbwmk6qB1/TFzY=",
+        "lastModified": 1771207753,
+        "narHash": "sha256-b9uG8yN50DRQ6A7JdZBfzq718ryYrlmGgqkRm9OOwCE=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "23d72dabcb3b12469f57b37170fcbc1789bd7457",
+        "rev": "d1c15b7d5806069da59e819999d70e1cec0760bf",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixos-25.11",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -55,7 +39,6 @@
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
-        "libxcb-errors": "libxcb-errors",
         "nixpkgs": "nixpkgs",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix"
